@@ -21,4 +21,19 @@ interface NoteApi {
     suspend fun delete(
         @Path("id") id: Long
     )
+
+    @GET("notes")
+    suspend fun getNoteById(
+        @Path("id") id: Long
+    )
+    //java
+    //@GetMapping("/{id}")
+    //public Note getNoteById(@PathVariable Long id) {
+    //    return service.getById(id);
+    //}
+
+    //public Note getById(Long id) {
+    //    return repository.findById(id)
+    //            .orElseThrow(() -> new RuntimeException("Note not found"));
+    //}
 }

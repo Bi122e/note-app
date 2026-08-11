@@ -1,4 +1,4 @@
-package com.example.noteapp.ui.presentation
+package com.example.noteapp.viewmodel
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -6,7 +6,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.noteapp.model.Note
-import com.example.noteapp.network.NoteApi
 import com.example.noteapp.network.RetrofitInstance
 import kotlinx.coroutines.launch
 
