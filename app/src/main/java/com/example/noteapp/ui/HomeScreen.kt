@@ -42,10 +42,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.noteapp.model.Note
 
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    notes: List<Note>
+) {
 
     val items = listOf(1,2,3,4)
     var query by remember { mutableStateOf("") }
@@ -77,7 +80,7 @@ fun HomeScreen() {
                 onActiveChange = {  }
             )
 
-            if (items.isNotEmpty()) {
+            if (notes.isNotEmpty()) {
 
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
@@ -87,9 +90,11 @@ fun HomeScreen() {
                     horizontalArrangement = Arrangement.spacedBy(0.dp)
                 ) {
 
-                    items(items) { noteItem ->
+                    items(notes) { noteItem ->
 
-                        NoteItem()
+                        NoteItem(
+                            note = noteItem
+                        )
 
                     }
                 }
@@ -102,7 +107,9 @@ fun HomeScreen() {
 }
 
 @Composable
-fun NoteItem() {
+fun NoteItem(
+    note: Note
+) {
 
     Box(
         modifier = Modifier
@@ -125,7 +132,7 @@ fun NoteItem() {
        ) {
 
            Text(
-               text = "testfdfdfdffdfdfdffdfdf",
+               text = note.title,
                color = Color.White,
                fontSize = 16.sp,
                maxLines = 1,
@@ -133,7 +140,7 @@ fun NoteItem() {
            )
 
             Text(
-               text = "testfdfdfdffdfdfdffdfdf",
+               text = note.content,
                color = Color(0xFFCFCFCF),
                fontSize = 16.sp,
                maxLines = 1,
@@ -208,7 +215,9 @@ fun PreviewHomeScreen() {
             .background(Color.White)
     )
     HomeScreen(
-
+        notes = listOf(
+            Note()
+        )
     )
 }
 
@@ -232,12 +241,7 @@ fun TopBar() {
 }
 
 
-data class Note(
-    val id: Long = 0,
-    val title: String = "",
-    val content: String = "",
 
-    )
 
 
 @Composable

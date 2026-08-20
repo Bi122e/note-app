@@ -17,15 +17,15 @@ interface NoteApi {
         @Body note: Note
     ): Note
 
-    @DELETE("notes")
+    @DELETE("notes/{id}")
     suspend fun delete(
         @Path("id") id: Long
     )
 
-    @GET("notes")
+    @GET("notes/{id}")
     suspend fun getNoteById(
         @Path("id") id: Long
-    )
+    ): Note
     //java
     //@GetMapping("/{id}")
     //public Note getNoteById(@PathVariable Long id) {

@@ -1,5 +1,6 @@
 package com.example.noteapp.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -13,6 +14,7 @@ class NoteViewModel: ViewModel() {
 
 
     var notes by mutableStateOf<List<Note>>(emptyList())
+    var note by mutableStateOf<List<Note>>(emptyList())
 
     init {
         loadNotes()
@@ -28,15 +30,19 @@ class NoteViewModel: ViewModel() {
 
         viewModelScope.launch {
 
-            RetrofitInstance.api.create(
-                Note(
-                    title = title,
-                    content = content
+            try {
+                RetrofitInstance.api.create(
+                    Note(
+                        title = title,
+                        content = content
+                    )
                 )
-            )
-        }
-
-        loadNotes()
+                notes = RetrofitInstance.api.getNotes()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Log.d("error_add", e.toString())
+            }
+         }
     }
 
     fun delete(id: Long) {
