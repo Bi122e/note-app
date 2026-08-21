@@ -1,6 +1,8 @@
 package com.example.noteapp.ui
 
-import android.R
+ import android.os.Build
+ import androidx.annotation.RequiresApi
+ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -38,11 +40,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
  import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.noteapp.model.Note
+ import com.example.noteapp.R
+ import com.example.noteapp.extention.toDateTimeUi
+ import com.example.noteapp.model.Note
 
 
 @Composable
@@ -100,12 +106,42 @@ fun HomeScreen(
                 }
             } else {
 
+                EmptyScreen()
+
             }
         }
 
     }
 }
 
+
+@Composable
+fun EmptyScreen() {
+
+    Spacer(Modifier.height(40.dp))
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+
+        Text(
+            text = "Chua co ghi chu nao",
+            fontSize = 28.sp,
+            color = Color.White
+        )
+
+        Image(
+            painter = painterResource(R.drawable.ic_empty_note),
+            contentDescription = null,
+            modifier = Modifier
+        )
+    }
+
+}
+
+
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NoteItem(
     note: Note
@@ -150,7 +186,7 @@ fun NoteItem(
            Spacer(Modifier.height(16.dp))
 
            Text(
-               text = "1:05 PM",
+               text = note.updatedAt?.toDateTimeUi() ?: "null",
                color = Color(0xFFDBDBDB),
                fontSize = 12.sp
            )
