@@ -8,13 +8,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.noteapp.model.Note
 import com.example.noteapp.network.RetrofitInstance
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class NoteViewModel: ViewModel() {
 
 
-    var notes by mutableStateOf<List<Note>>(emptyList())
-    var note by mutableStateOf<List<Note>>(emptyList())
+    val notes =  MutableStateFlow<List<Note>>(emptyList())
+    val note  = MutableStateFlow<Note?>(null)
 
     init {
         loadNotes()
@@ -22,13 +24,14 @@ class NoteViewModel: ViewModel() {
 
     private fun loadNotes() {
         viewModelScope.launch {
-            notes = RetrofitInstance.api.getNotes()
+            notes.value = RetrofitInstance.api.getNotes()
         }
     }
 
     fun add(title: String, content: String) {
 
         viewModelScope.launch {
+
 
             try {
                 RetrofitInstance.api.create(
@@ -37,7 +40,7 @@ class NoteViewModel: ViewModel() {
                         content = content
                     )
                 )
-                notes = RetrofitInstance.api.getNotes()
+                notes.value = RetrofitInstance.api.getNotes()
             } catch (e: Exception) {
                 e.printStackTrace()
                 Log.d("error_add", e.toString())
@@ -52,6 +55,13 @@ class NoteViewModel: ViewModel() {
             RetrofitInstance.api.delete(id)
 
             loadNotes()
+        }
+    }
+
+    fun getNote(noteId: Long) {
+        viewModelScope.launch {
+            val apiNote = RetrofitInstance.api.getNoteById(noteId)
+            note.value = apiNote
         }
     }
 }

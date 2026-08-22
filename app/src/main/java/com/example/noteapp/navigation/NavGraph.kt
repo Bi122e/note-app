@@ -1,6 +1,11 @@
 package com.example.noteapp.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHost
 import androidx.navigation.NavType
@@ -13,6 +18,7 @@ import com.example.noteapp.ui.HomeScreen
 import com.example.noteapp.viewmodel.NoteViewModel
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NavGraph() {
 
@@ -28,9 +34,26 @@ fun NavGraph() {
         ) {
 
             val noteViewModel: NoteViewModel = viewModel()
-            val notes = noteViewModel.notes
+            val notes by noteViewModel.notes.collectAsState()
 
-            HomeScreen(notes)
+             HomeScreen(
+                notes = notes,
+                onAddNote = {
+                    navController.navigate("detail")
+                },
+                onNavigationDetail = { noteId ->
+
+                    navController.navigate("detail/{$noteId}")
+                }
+            )
+        }
+
+        composable(
+            route = "detail"
+        ) {
+            DetailScreen(
+                note = null
+            )
         }
 
 
@@ -41,11 +64,22 @@ fun NavGraph() {
                     type = NavType.LongType
                 }
             )
-        ) {  navBackStack ->
+        ) { navBackStack ->
 
             val noteId = navBackStack.arguments?.getLong("noteId") ?: return@composable
 
-            DetailScreen()
+            val viewModel: NoteViewModel = viewModel()
+
+            LaunchedEffect(noteId) {
+                viewModel.getNote(noteId)
+            }
+
+            val note by viewModel.note.collectAsState()
+
+
+            DetailScreen(
+                note = note
+            )
         }
     }
 }

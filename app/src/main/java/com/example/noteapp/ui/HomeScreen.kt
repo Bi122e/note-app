@@ -4,7 +4,8 @@ package com.example.noteapp.ui
  import androidx.annotation.RequiresApi
  import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
+ import androidx.compose.foundation.clickable
+ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -51,10 +52,14 @@ import androidx.compose.ui.unit.sp
  import com.example.noteapp.model.Note
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeScreen(
-    notes: List<Note>
-) {
+    notes: List<Note>,
+    onAddNote:() -> Unit,
+    onNavigationDetail: (Long) -> Unit,
+
+    ) {
 
     val items = listOf(1,2,3,4)
     var query by remember { mutableStateOf("") }
@@ -63,7 +68,9 @@ fun HomeScreen(
     Scaffold(
         modifier = Modifier,
         topBar = { TopBar() },
-        bottomBar = { BottomNoteBar() },
+        bottomBar = { BottomNoteBar(
+            onAddNote = onAddNote
+        ) },
         containerColor = Color.Black
     ) { paddingValues ->
 
@@ -99,7 +106,8 @@ fun HomeScreen(
                     items(notes) { noteItem ->
 
                         NoteItem(
-                            note = noteItem
+                            note = noteItem,
+                            onNavigationDetail = onNavigationDetail
                         )
 
                     }
@@ -144,8 +152,10 @@ fun EmptyScreen() {
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NoteItem(
-    note: Note
-) {
+    note: Note,
+    onNavigationDetail: (Long) -> Unit,
+
+    ) {
 
     Box(
         modifier = Modifier
@@ -160,6 +170,9 @@ fun NoteItem(
                 vertical = 24.dp,
                 horizontal = 10.dp
             )
+            .clickable{
+                onNavigationDetail(note.id)
+            }
     ) {
 
        Column(
@@ -241,6 +254,7 @@ fun SearchNoteBar(
         }
     }
 }
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 @Preview (showBackground = true)
 fun PreviewHomeScreen() {
@@ -253,7 +267,9 @@ fun PreviewHomeScreen() {
     HomeScreen(
         notes = listOf(
             Note()
-        )
+        ),
+        onAddNote = {},
+        onNavigationDetail = {}
     )
 }
 
@@ -281,7 +297,9 @@ fun TopBar() {
 
 
 @Composable
-fun BottomNoteBar() {
+fun BottomNoteBar(
+    onAddNote:() -> Unit
+) {
 
     Row(
         modifier = Modifier
@@ -302,7 +320,10 @@ fun BottomNoteBar() {
                     color = Color(0xFFFFBF00),
                     CircleShape
                 )
-                .padding(10.dp),
+                .padding(10.dp)
+                .clickable {
+                    onAddNote()
+                },
             contentAlignment = Alignment.Center
         ) {
 
